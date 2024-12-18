@@ -47,8 +47,8 @@ def task1(): # Основная функция
     calculate_result(completion_times)  # Вычисляем и выводим сумму для самого быстрого списка
 
 # Тест задачи 1
-if __name__ == "__main__":
-    task1()  # Вызываем основную функцию
+# if __name__ == "__main__":
+#     task1()  # Вызываем основную функцию
 
 # --- Задача №2  Поиск и суммирование чисел через цепочку файлов ---
 import zipfile
@@ -66,8 +66,7 @@ def process_file(zip_path_1, zip_path_2, file_path): # Извлекает пут
     with zipfile.ZipFile(zip_path_1) as zip_file:
         with zip_file.open(file_path) as file:
             relative_path = file.read().decode('utf-8').strip()  # Чтение пути из файла
-            # Заменяем обратные слэши на прямые
-            relative_path = relative_path.replace('\\', '/')
+            relative_path = relative_path.replace('\\', '/')# Заменяем обратные слэши на прямые
             return read_number_from_zip(zip_path_2, relative_path)  # Получение числа из второго архива
 
 def task2(): # Функция запуска обработки файлов
@@ -77,14 +76,13 @@ def task2(): # Функция запуска обработки файлов
     with zipfile.ZipFile(path_to_first_zip) as zip_file:
         text_files = [f for f in zip_file.namelist() if f.endswith('.txt')]  # Файлы с расширением .txt
     # Использование multiprocessing для параллельной обработки файлов
-    with multiprocessing.Pool(processes=10) as pool:
-        results = pool.starmap(process_file, [(path_to_first_zip, path_to_second_zip, file_path) for file_path in text_files])
-    pool.close
-    pool.join
+    num_processes = multiprocessing.cpu_count() -1 # Определяем количество процессов
+    with multiprocessing.Pool(processes=num_processes) as pool:
+    # pool = multiprocessing.Pool(processes=num_processes) # создаем объект пулла процессов
+        results = pool.starmap(process_file, [(path_to_first_zip, path_to_second_zip, file_path) for file_path in text_files]) # Запуск обработки файлов
     # Суммирование всех найденных чисел и вывод результата
     total_sum = sum(results)
     print(f'Сумма всех чисел {total_sum}')  # Выводим общий результат
 # Тест задачи 2
 if __name__ == "__main__":
     task2()  # Запуск основной функции
-   
